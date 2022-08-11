@@ -15,7 +15,7 @@ class SomeUseCase: SomeUseCaseType { }
 ```
 > As for now it is mandatory to the SmartApp project, optional for the rest of libs.
 
-## Reactive properties
+## Reactive
 
 :white_check_mark: Use descriptive postfix eg. 
 ```swift
@@ -24,6 +24,11 @@ var statusPublisher: AnyPublisher<String, Never>
 :x: instead of 
 ```swift
 var status: AnyPublisher<String, Never>
+```
+
+:white_check_mark: Subscription cancelling
+```swift
+private var cancellables = Set<AnyCancellable>()
 ```
 
 # Testing
