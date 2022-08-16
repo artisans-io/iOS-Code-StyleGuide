@@ -67,3 +67,35 @@ doSomething(
     )
 )
 ``` 
+## Other
+:x: Do not use self where not needed.
+```swift
+override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    self.title = lang("workbook_pro.groups_title")
+}
+```
+
+:white_check_mark: prefer
+```swift
+override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    title = lang("workbook_pro.groups_title")
+}
+```
+
+:x: Do not use return where not needed.
+```swift
+func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return allGroups.count
+}
+```
+
+:white_check_mark: prefer
+```swift
+func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    allGroups.count
+}
+```
