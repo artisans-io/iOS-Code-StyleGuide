@@ -55,6 +55,29 @@ waitForExpectations(timeout: .acceptableMinimum)
 # Formatting
 Most of the stuff should (will) be picked by by formatter but here are some more difficult cases
 
+## Protocols
+:white_check_mark: Do not add new lines for var/func in protocols
+```swift
+public protocol WorkBookDataSource {
+     var numberOfSections: Int { get }
+     var onlyOneColor: Bool { get }
+     var sorting: WorkBookDataSorting { get }
+     var sections: [WorkBookSectionData] { get }
+ }
+```
+:x: 
+```swift
+public protocol WorkBookDataSource {
+     var numberOfSections: Int { get }
+
+     var onlyOneColor: Bool { get }
+
+     var sorting: WorkBookDataSorting { get }
+
+     var sections: [WorkBookSectionData] { get }
+ }
+```
+
 ## Parameters
 :white_check_mark: Add line breaks before first parameter when there are multiple parameters
 ```swift
