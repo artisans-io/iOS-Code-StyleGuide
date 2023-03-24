@@ -1,6 +1,6 @@
 import UIKit
 
-class SVDatabase {
+class Database {
     
     struct OrderModel {
         let name: String
@@ -9,9 +9,6 @@ class SVDatabase {
     
     // API
     func save(orders: [OrderModel]) { }
-    
-    // USE CASE eg. rename
-    //func save(order: OrderModel) -> OrderModel { }
     
     func saveOrder(name: String, id: Int) -> OrderModel { OrderModel(name: name, id: id) }
     
@@ -37,11 +34,11 @@ class Networking {
 // Business logic
 class SmartKit {
     let networking = Networking()
-    let database = SVDatabase()
+    let database = Database()
     
     func initialLoad() {
         let apiOrders: [Networking.OrderAPIModel] = networking.downloadOrders()
-        let databaseOrders: [SVDatabase.OrderModel] = apiOrders.map { SVDatabase.OrderModel(name: $0.name, id: $0.id) }
+        let databaseOrders: [Database.OrderModel] = apiOrders.map { Database.OrderModel(name: $0.name, id: $0.id) }
     }
     
     func renameFirstOrder(name: String) {
@@ -50,25 +47,37 @@ class SmartKit {
         networking.upload(order: Networking.OrderAPIModel(name: orderDto.name, id: orderDto.id))
     }
 
-    struct OrderViewModel {
-        let id: Int
-        let name: String
-        let index: String
-        let isImage: Bool // UserDefaults
-    }
-    
-    // UseCase:lista orderów (index, nazwa)
+    // Use Case: lista orderów (index, nazwa)
     func getOrders() -> [Any] {
         database.getOrders() 
     }
 }
 
-class Presentation {
-    
+class App {
     let smartKit = SmartKit()
     
-    var orders: [OrderViewModel] {
+    struct OrderListItemViewModel {
+        let name: String
+        let typeIcon: String
+    }
+    
+    struct OrderDetailsViewModel {
+        let name: String
+        let type: String
+        let date: Date
+        let status: String
+        
+        var shouldBeRed: Bool {
+            status == "closed"
+        }
+    }
+    
+    var list: [OrderListItemViewModel] {
         smartKit.getOrders()
+    }
+    
+    var details: OrderDetailsViewModel? {
+        smartKit.getOrders().first!
     }
 }
 // cmd ctrel e - rename w scope
