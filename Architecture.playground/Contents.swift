@@ -7,10 +7,9 @@ class Database {
         let id: Int
     }
     
-    // API
-    func save(orders: [OrderModel]) { }
+    func insert(orders: [OrderModel]) { }
     
-    func saveOrder(name: String, id: Int) -> OrderModel { OrderModel(name: name, id: id) }
+    func updateOrder(name: String, id: Int) -> OrderModel { OrderModel(name: name, id: id) }
     
     func getOrders() -> [OrderModel] {
         []
@@ -40,17 +39,17 @@ class Networking {
 
 // Business logic
 class SmartKit {
-    let networking = Networking()
-    let database = Database()
+    private let networking = Networking()
+    private let database = Database()
     
     func initialLoad() {
         let apiOrders: [Networking.OrderAPIResponse] = networking.downloadOrders()
         let databaseOrders: [Database.OrderModel] = apiOrders.map { Database.OrderModel(name: $0.name, id: $0.id) }
-        database.save(orders: databaseOrders)
+        database.insert(orders: databaseOrders)
     }
     
     func renameOrder(name: String, id: Int) {
-        let orderDto = database.saveOrder(name: name, id: id)
+        let orderDto = database.updateOrder(name: name, id: id)
         
         networking.upload(order: Networking.OrderAPIRequest(
             name: orderDto.name,
@@ -67,14 +66,16 @@ class SmartKit {
 
 // Smart App 3
 class App {
-    let smartKit = SmartKit()
+    private let smartKit = SmartKit()
     
     struct OrderListItemViewModel {
         let id: Int
         let name: String
         let type: String
         var typeIcon: String {
-            type == "open" ? "open.png" : "unknown.png"
+            type == "open"
+                ? "open.png"
+                : "unknown.png"
         }
     }
     
