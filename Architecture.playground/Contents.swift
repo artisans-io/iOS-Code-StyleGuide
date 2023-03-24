@@ -65,7 +65,6 @@ class SmartKit {
     }
 }
 
-
 // Smart App 3
 class App {
     let smartKit = SmartKit()
@@ -108,4 +107,6 @@ class App {
         smartKit.renameOrder(name: "foo", id: firstViewModel.id)
     }
 }
-// cmd ctrel e - rename w scope
+
+// CMD + CTRL + E - Rename w scope
+// The Spotify - The Economist
