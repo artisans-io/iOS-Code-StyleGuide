@@ -19,16 +19,23 @@ class Database {
 
 class Networking {
     
-    struct OrderAPIModel: Codable {
+    struct OrderAPIResponse: Codable {
         let name: String
         let id: Int
+        let serverId: String
     }
     
-    func downloadOrders() -> [OrderAPIModel] {
+    struct OrderAPIRequest: Codable {
+        let name: String
+        let id: Int
+        let localModificationDate: Date
+    }
+    
+    func downloadOrders() -> [OrderAPIResponse] {
         []
     }
     
-    func upload(order: OrderAPIModel) { }
+    func upload(order: OrderAPIRequest) { }
 }
 
 // Business logic
@@ -37,14 +44,19 @@ class SmartKit {
     let database = Database()
     
     func initialLoad() {
-        let apiOrders: [Networking.OrderAPIModel] = networking.downloadOrders()
+        let apiOrders: [Networking.OrderAPIResponse] = networking.downloadOrders()
         let databaseOrders: [Database.OrderModel] = apiOrders.map { Database.OrderModel(name: $0.name, id: $0.id) }
+        database.save(orders: databaseOrders)
     }
     
-    func renameFirstOrder(name: String) {
-        let firstOrder = database.getOrders().first!
-        let orderDto = database.saveOrder(name: name, id: firstOrder.id)
-        networking.upload(order: Networking.OrderAPIModel(name: orderDto.name, id: orderDto.id))
+    func renameOrder(name: String, id: Int) {
+        let orderDto = database.saveOrder(name: name, id: id)
+        
+        networking.upload(order: Networking.OrderAPIRequest(
+            name: orderDto.name,
+            id: orderDto.id,
+            localModificationDate: Date()
+        ))
     }
 
     // Use Case: lista orderów (index, nazwa)
@@ -53,12 +65,18 @@ class SmartKit {
     }
 }
 
+
+// Smart App 3
 class App {
     let smartKit = SmartKit()
     
     struct OrderListItemViewModel {
+        let id: Int
         let name: String
-        let typeIcon: String
+        let type: String
+        var typeIcon: String {
+            type == "open" ? "open.png" : "unknown.png"
+        }
     }
     
     struct OrderDetailsViewModel {
@@ -73,11 +91,21 @@ class App {
     }
     
     var list: [OrderListItemViewModel] {
-        smartKit.getOrders()
+        //smartKit.getOrders()
+        []
     }
     
     var details: OrderDetailsViewModel? {
-        smartKit.getOrders().first!
+        //smartKit.getOrders().first!
+        nil
+    }
+    
+    func renameFirstOrderToFoo() {
+        guard let firstViewModel = list.first else {
+            return
+        }
+        
+        smartKit.renameOrder(name: "foo", id: firstViewModel.id)
     }
 }
 // cmd ctrel e - rename w scope
