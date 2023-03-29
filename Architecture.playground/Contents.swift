@@ -2,6 +2,7 @@ import UIKit
 
 class Database {
     
+    // Gdzie to zdefiniować?
     struct OrderModel {
         let name: String
         let id: Int
@@ -39,6 +40,24 @@ class Networking {
 
 // Business logic
 class SmartKit {
+    
+    struct OrderListItem {
+        let id: Int
+        let name: String
+        let type: String
+    }
+    
+    struct OrderDetails {
+        let name: String
+        let type: String
+        let date: Date
+        let status: String
+        
+        var shouldBeRed: Bool {
+            status == "closed"
+        }
+    }
+    
     private let networking = Networking()
     private let database = Database()
     
@@ -111,3 +130,14 @@ class App {
 
 // CMD + CTRL + E - Rename w scope
 // The Spotify - The Economist
+
+/**
+ Problem: Redundante modele
+ - Model w SmartKit i Database będzie chyba zawsze ten sam (Safe Object) - nie widzę Use Case w którym to bym miało być inaczej. ViewModel będzie miał rzeczy per UI np stan czy publishery.
+ - Niezbędne modele:
+ - - VM - bo Observable
+ - - API - bo Codable
+ - - CD - bo CoreData
+ - Safe Object nIe można zdefiniować w Database (SK -> SVDB) bo Database NIE BĘDZIE MOŻNA PODMIENIĆ
+ - Czy Database musi być osobnym modułem? Chyba nie? Ale wtedy rozrasta się jego odpowiedzialność. Czy to wielki problem?
+ */
